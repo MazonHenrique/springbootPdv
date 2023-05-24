@@ -14,37 +14,36 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.curso.pdv.entity.User;
-import com.curso.pdv.repository.UserRepositry;
+import com.curso.pdv.entity.Product;
+import com.curso.pdv.repository.ProductRepositry;
 
 @Controller
-@RequestMapping("/user")
-public class UserController {
+@RequestMapping("/product")
+public class ProductController {
     
     @Autowired
-    private UserRepositry userRepositry;
+    ProductRepositry productRepositry;
 
     @GetMapping
     public ResponseEntity getAll(){
-        return new ResponseEntity<>(userRepositry.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(productRepositry.findAll(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity post(@RequestBody User user){
+    public ResponseEntity post(@RequestBody Product product){
         try{
-            user.setEnable(true);
-            return new ResponseEntity<>(userRepositry.save(user),HttpStatus.CREATED);
+            return new ResponseEntity<>(productRepositry.save(product),HttpStatus.CREATED);
         }catch(Exception error){
             return new ResponseEntity<>(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping
-    public ResponseEntity put(@RequestBody User user){
-        Optional<User> userToEdit = userRepositry.findById(user.getId());
-        if(userToEdit.isPresent()){
-            userRepositry.save(user);
-            return new ResponseEntity<>(user,HttpStatus.OK);
+    public ResponseEntity put(@RequestBody Product product){
+        Optional<Product> productToEdit = productRepositry.findById(product.getId());
+        if(productToEdit.isPresent()){
+            productRepositry.save(product);
+            return new ResponseEntity<>(product,HttpStatus.OK);
         }
         
         return ResponseEntity.notFound().build();
@@ -53,8 +52,8 @@ public class UserController {
     @DeleteMapping("{id}")
     public ResponseEntity delete(@PathVariable long id){
         try{
-            userRepositry.deleteById(id);
-            return new ResponseEntity<>("Usuário removido com sucesso", HttpStatus.OK);
+            productRepositry.deleteById(id);
+            return new ResponseEntity<>("Produto removido com sucesso", HttpStatus.OK);
         }catch(Exception error){
             return new ResponseEntity<>(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
