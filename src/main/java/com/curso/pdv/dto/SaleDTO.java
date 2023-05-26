@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SaleDTO {
 
-    private long id;
+    private long userid;
     List<ProductDTO> items;
 
 }
