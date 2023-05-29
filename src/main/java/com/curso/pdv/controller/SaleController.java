@@ -5,11 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.curso.pdv.dto.SaleDTO;
+import com.curso.pdv.repository.SaleRepositry;
 import com.curso.pdv.service.SaleService;
 
 @Controller
@@ -18,6 +20,11 @@ public class SaleController {
 
     @Autowired
     private SaleService saleService;
+    
+    @GetMapping
+    public ResponseEntity get(){
+        return new ResponseEntity<>(saleService.findAll(), HttpStatus.OK);
+    }
     
     @PostMapping
     public ResponseEntity post(@RequestBody SaleDTO saleDTO){

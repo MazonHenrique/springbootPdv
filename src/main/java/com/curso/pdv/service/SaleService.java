@@ -1,6 +1,7 @@
 package com.curso.pdv.service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.curso.pdv.dto.ProductDTO;
+import com.curso.pdv.dto.ProductInfoDTO;
 import com.curso.pdv.dto.SaleDTO;
+import com.curso.pdv.dto.SaleInfoDTO;
 import com.curso.pdv.entity.Sale;
 import com.curso.pdv.entity.User;
 import com.curso.pdv.entity.ItemSale;
@@ -31,6 +34,27 @@ public class SaleService {
     private final SaleRepositry saleRepositry;
     private final ItemSaleRepository itemSaleRepository;
     
+    public List<SaleInfoDTO> findAll(){
+        return saleRepositry.findAll().stream().map(sale -> getSaleInfo(sale)).collect(Collectors.toList());
+    }
+
+    public SaleInfoDTO getSaleInfo(Sale sale){
+        SaleInfoDTO saleInfoDTO = new SaleInfoDTO();
+        saleInfoDTO.setUser(sale.getUser().getName());
+        saleInfoDTO.setData(sale.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        saleInfoDTO.setProductos(getProductsInfo(sale.getItems()));
+        return saleInfoDTO;
+    }
+    
+    private List<ProductInfoDTO> getProductsInfo(List<ItemSale> items) {
+        return items.stream().map(item -> {
+            ProductInfoDTO productInfoDTO = new ProductInfoDTO();
+            productInfoDTO.setDescription(item.getProduct().getName());
+            productInfoDTO.setQuantity(item.getQuantity());
+            return productInfoDTO;
+        }).collect(Collectors.toList());
+    }
+
     //Anotação para desfazer o cadastro da venda se der algum erro no cadastro do item da venda.
     @Transactional
     public long save(SaleDTO sale){
