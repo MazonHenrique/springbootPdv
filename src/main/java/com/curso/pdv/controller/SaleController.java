@@ -1,6 +1,7 @@
 package com.curso.pdv.controller;
 
-import org.apache.coyote.Response;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.curso.pdv.dto.SaleDTO;
-import com.curso.pdv.repository.SaleRepositry;
 import com.curso.pdv.service.SaleService;
 
 @Controller
@@ -25,6 +25,7 @@ public class SaleController {
     public ResponseEntity get(){
         return new ResponseEntity<>(saleService.findAll(), HttpStatus.OK);
     }
+
     
     @PostMapping
     public ResponseEntity post(@RequestBody SaleDTO saleDTO){
