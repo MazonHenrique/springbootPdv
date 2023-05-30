@@ -1,7 +1,5 @@
 package com.curso.pdv.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +23,7 @@ public class SaleController {
     public ResponseEntity get(){
         return new ResponseEntity<>(saleService.findAll(), HttpStatus.OK);
     }
-
-    
+   
     @PostMapping
     public ResponseEntity post(@RequestBody SaleDTO saleDTO){
         try{

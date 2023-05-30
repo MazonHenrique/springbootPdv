@@ -35,7 +35,7 @@ public class Sale {
 	@JoinColumn(name = "user_id")
 	private User user;
 	
-	@OneToMany(mappedBy = "sale", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "sale", fetch = FetchType.LAZY)
 	private List<ItemSale> items;
 
 }

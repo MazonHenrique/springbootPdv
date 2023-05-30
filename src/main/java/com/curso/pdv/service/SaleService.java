@@ -23,7 +23,6 @@ import com.curso.pdv.repository.UserRepositry;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
-
 @Service
 @RequiredArgsConstructor
 public class SaleService {
@@ -33,10 +32,13 @@ public class SaleService {
     private final SaleRepositry saleRepositry;
     private final ItemSaleRepository itemSaleRepository;
     
+    //metodo para buscar todas as vendas.
+    //este método é chamado na SaleController
     public List<SaleInfoDTO> findAll(){
         return saleRepositry.findAll().stream().map(sale -> getSaleInfo(sale)).collect(Collectors.toList());
     }
 
+    //Metodo para montar uma lista de vendas
     public SaleInfoDTO getSaleInfo(Sale sale){
         SaleInfoDTO saleInfoDTO = new SaleInfoDTO();
         saleInfoDTO.setUser(sale.getUser().getName());
@@ -45,6 +47,7 @@ public class SaleService {
         return saleInfoDTO;
     }
     
+    //Metodo para montar uma lista de itens de cada venda
     private List<ProductInfoDTO> getProductsInfo(List<ItemSale> items) {
         return items.stream().map(item -> {
             ProductInfoDTO productInfoDTO = new ProductInfoDTO();
@@ -54,6 +57,7 @@ public class SaleService {
         }).collect(Collectors.toList());
     }
 
+    //metodo para salvar uma venda. Este metodo e chamado na SaleController
     //Anotação para desfazer o cadastro da venda se der algum erro no cadastro do item da venda.
     @Transactional
     public long save(SaleDTO sale){
@@ -64,6 +68,7 @@ public class SaleService {
         newSale.setUser(user);
         newSale.setDate(LocalDate.now());
         List<ItemSale> items = getItemSale(sale.getItems());
+        
         //salva venda e retorna a venda salva
         //Nesse retorno ja tem o id da venda e posso salvar os itens da venda
         newSale = saleRepositry.save(newSale);
@@ -73,6 +78,8 @@ public class SaleService {
     
     }
 
+    //Metodo para salvar os itens de uma venda...e chamado depois de salvar a venda, pois precisamos
+    //do id da venda para salvar o item da venda.
     private void savaItemSale(List<ItemSale> items, Sale newSale) {
         for(ItemSale item: items){
             item.setSale(newSale);
