@@ -1,5 +1,6 @@
 package com.curso.pdv.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -41,9 +42,10 @@ public class SaleService {
     //Metodo para montar uma lista de vendas
     public SaleInfoDTO getSaleInfo(Sale sale){
         SaleInfoDTO saleInfoDTO = new SaleInfoDTO();
+        saleInfoDTO.setId(sale.getId());
         saleInfoDTO.setUser(sale.getUser().getName());
         saleInfoDTO.setData(sale.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        saleInfoDTO.setProductos(getProductsInfo(sale.getItems()));
+        saleInfoDTO.setProducts(getProductsInfo(sale.getItems()));
         return saleInfoDTO;
     }
     
@@ -96,5 +98,10 @@ public class SaleService {
             itemSale.setQuantity(item.getQuantity());
             return itemSale;
         }).collect(Collectors.toList());
+    }
+
+    public SaleInfoDTO getById(long id) {
+        Sale sale =  saleRepositry.findById(id).get();
+        return getSaleInfo(sale);
     }
 }

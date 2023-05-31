@@ -2,6 +2,8 @@ package com.curso.pdv.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +32,7 @@ public class User {
 	
 	private boolean isEnable;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "user")
 	private List<Sale> sales;
 	
