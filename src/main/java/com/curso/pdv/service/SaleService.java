@@ -96,6 +96,18 @@ public class SaleService {
             ItemSale itemSale = new ItemSale();
             itemSale.setProduct(product);
             itemSale.setQuantity(item.getQuantity());
+
+            //verifica se tem 0 ou se a venda é maior que a quantidade em estoque
+            if(product.getQuantity() == 0){
+                throw new IllegalArgumentException();
+            }else if(product.getQuantity() < item.getQuantity()){
+                throw new IllegalArgumentException();
+            }
+            //pega quantidade que tem do produto, diminui a venda e salva nova quantidade no banco.
+            int total = product.getQuantity() - item.getQuantity();
+            product.setQuantity(total);
+            productRepositry.save(product);
+
             return itemSale;
         }).collect(Collectors.toList());
     }
