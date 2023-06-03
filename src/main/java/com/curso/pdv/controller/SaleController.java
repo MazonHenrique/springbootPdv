@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.curso.pdv.dto.SaleDTO;
+import com.curso.pdv.exceptions.InvalidOperationException;
+import com.curso.pdv.exceptions.NoItemException;
 import com.curso.pdv.service.SaleService;
 
 @Controller
@@ -27,7 +29,11 @@ public class SaleController {
 
     @GetMapping("{id}")
     public ResponseEntity getById(@PathVariable long id){
-        return new ResponseEntity<>(saleService.getById(id), HttpStatus.OK);
+        try{
+            return new ResponseEntity<>(saleService.getById(id), HttpStatus.OK);
+        }catch(NoItemException | InvalidOperationException error){
+            return new ResponseEntity<>(error.getMessage(), HttpStatus.BAD_REQUEST);    
+        }
     }
    
     @PostMapping
@@ -35,6 +41,8 @@ public class SaleController {
         try{
             long id = saleService.save(saleDTO);
             return new ResponseEntity<>("Venda realizada com sucesso: " + id, HttpStatus.CREATED);
+        }catch(NoItemException | InvalidOperationException error){
+            return new ResponseEntity<>(error.getMessage(), HttpStatus.BAD_REQUEST);
         }catch(Exception error){
             return new ResponseEntity<>(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }    

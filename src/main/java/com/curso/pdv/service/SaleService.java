@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import com.curso.pdv.dto.SaleDTO;
 import com.curso.pdv.dto.SaleInfoDTO;
 import com.curso.pdv.entity.Sale;
 import com.curso.pdv.entity.User;
+import com.curso.pdv.exceptions.InvalidOperationException;
+import com.curso.pdv.exceptions.NoItemException;
 import com.curso.pdv.entity.ItemSale;
 import com.curso.pdv.entity.Product;
 import com.curso.pdv.repository.ItemSaleRepository;
@@ -64,8 +67,9 @@ public class SaleService {
     @Transactional
     public long save(SaleDTO sale){
 
-        User user =userRepositry.findById(sale.getUserid()).get();
-
+        //busca usuario e se nao achar lança exception
+        User user = userRepositry.findById(sale.getUserid())
+            .orElseThrow(()->new NoItemException("Usuário não encontrado!"));
         Sale newSale = new Sale();
         newSale.setUser(user);
         newSale.setDate(LocalDate.now());
@@ -77,7 +81,6 @@ public class SaleService {
         savaItemSale(items, newSale);
 
         return newSale.getId();
-    
     }
 
     //Metodo para salvar os itens de uma venda...e chamado depois de salvar a venda, pois precisamos
@@ -90,6 +93,11 @@ public class SaleService {
     }
 
     private List<ItemSale> getItemSale(List<ProductDTO> products){
+        //Se chegar a venda sem itens...
+        if(products.isEmpty()){
+            throw new InvalidOperationException("Não é possível adicionar a venda sem itens!");
+        }
+
         //poderia ser feito tambem com um for ou forech
         return products.stream().map(item -> {
             Product product = productRepositry.getReferenceById(item.getProductid());
@@ -99,10 +107,12 @@ public class SaleService {
 
             //verifica se tem 0 ou se a venda é maior que a quantidade em estoque
             if(product.getQuantity() == 0){
-                throw new IllegalArgumentException();
-            }else if(product.getQuantity() < item.getQuantity()){
-                throw new IllegalArgumentException();
+                throw new NoItemException("Produto sem estoque");
+            }else if (product.getQuantity() < item.getQuantity()){
+                throw new InvalidOperationException(
+                    String.format("Quantidade de itens da venda (%s) e maior que quantidade em estoque (%s)", item.getQuantity(), product.getQuantity())); 
             }
+            
             //pega quantidade que tem do produto, diminui a venda e salva nova quantidade no banco.
             int total = product.getQuantity() - item.getQuantity();
             product.setQuantity(total);
@@ -113,7 +123,8 @@ public class SaleService {
     }
 
     public SaleInfoDTO getById(long id) {
-        Sale sale =  saleRepositry.findById(id).get();
+        Sale sale =  saleRepositry.findById(id)
+            .orElseThrow(()-> new NoItemException("Venda não encontrada"));
         return getSaleInfo(sale);
     }
 }
