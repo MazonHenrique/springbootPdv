@@ -1,10 +1,8 @@
 package com.curso.pdv.service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -56,6 +54,7 @@ public class SaleService {
     private List<ProductInfoDTO> getProductsInfo(List<ItemSale> items) {
         return items.stream().map(item -> {
             ProductInfoDTO productInfoDTO = new ProductInfoDTO();
+            productInfoDTO.setId(item.getId());
             productInfoDTO.setDescription(item.getProduct().getName());
             productInfoDTO.setQuantity(item.getQuantity());
             return productInfoDTO;

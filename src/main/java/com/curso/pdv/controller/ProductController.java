@@ -1,6 +1,5 @@
 package com.curso.pdv.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.curso.pdv.dto.ResponseDTO;
 import com.curso.pdv.entity.Product;
 import com.curso.pdv.repository.ProductRepositry;
 
@@ -26,21 +26,21 @@ public class ProductController {
     ProductRepositry productRepositry;
 
     @GetMapping
-    public ResponseEntity getAll(){
+    public ResponseEntity<?>getAll(){
         return new ResponseEntity<>(productRepositry.findAll(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity post(@RequestBody Product product){
+    public ResponseEntity<?> post(@RequestBody Product product){
         try{
             return new ResponseEntity<>(productRepositry.save(product),HttpStatus.CREATED);
         }catch(Exception error){
-            return new ResponseEntity<>(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ResponseDTO<>(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping
-    public ResponseEntity put(@RequestBody Product product){
+    public ResponseEntity<?> put(@RequestBody Product product){
         Optional<Product> productToEdit = productRepositry.findById(product.getId());
         if(productToEdit.isPresent()){
             productRepositry.save(product);
@@ -51,12 +51,12 @@ public class ProductController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@PathVariable long id){
+    public ResponseEntity<?> delete(@PathVariable long id){
         try{
             productRepositry.deleteById(id);
-            return new ResponseEntity<>("Produto removido com sucesso", HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseDTO<>("Produto removido com sucesso"), HttpStatus.OK);
         }catch(Exception error){
-            return new ResponseEntity<>(error.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new ResponseDTO<>(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
