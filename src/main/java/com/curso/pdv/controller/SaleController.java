@@ -24,12 +24,12 @@ public class SaleController {
     private SaleService saleService;
     
     @GetMapping
-    public ResponseEntity getAll(){
+    public ResponseEntity<?> getAll(){
         return new ResponseEntity<>(saleService.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity getById(@PathVariable long id){
+    public ResponseEntity<?> getById(@PathVariable long id){
         try{
             return new ResponseEntity<>(saleService.getById(id), HttpStatus.OK);
         }catch(NoItemException | InvalidOperationException error){
@@ -38,7 +38,7 @@ public class SaleController {
     }
    
     @PostMapping
-    public ResponseEntity post(@RequestBody SaleDTO saleDTO){
+    public ResponseEntity<?> post(@RequestBody SaleDTO saleDTO){
         try{
             long id = saleService.save(saleDTO);
             return new ResponseEntity<>(new ResponseDTO<>("Venda realizada com sucesso: " + id), HttpStatus.CREATED);

@@ -2,10 +2,12 @@ package com.curso.pdv.service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.curso.pdv.dto.ProductDTO;
 import com.curso.pdv.dto.ProductInfoDTO;
@@ -42,23 +44,27 @@ public class SaleService {
 
     //Metodo para montar uma lista de vendas
     public SaleInfoDTO getSaleInfo(Sale sale){
-        SaleInfoDTO saleInfoDTO = new SaleInfoDTO();
-        saleInfoDTO.setId(sale.getId());
-        saleInfoDTO.setUser(sale.getUser().getName());
-        saleInfoDTO.setData(sale.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        saleInfoDTO.setProducts(getProductsInfo(sale.getItems()));
-        return saleInfoDTO;
+        return SaleInfoDTO.builder()
+            .id(sale.getId())
+            .user(sale.getUser().getName())
+            .data(sale.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+            .products(getProductsInfo(sale.getItems()))
+            .build();
     }
     
     //Metodo para montar uma lista de itens de cada venda
     private List<ProductInfoDTO> getProductsInfo(List<ItemSale> items) {
-        return items.stream().map(item -> {
-            ProductInfoDTO productInfoDTO = new ProductInfoDTO();
-            productInfoDTO.setId(item.getId());
-            productInfoDTO.setDescription(item.getProduct().getName());
-            productInfoDTO.setQuantity(item.getQuantity());
-            return productInfoDTO;
-        }).collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(items)){
+            return Collections.emptyList();
+        }
+
+        return items.stream().map(
+                item -> ProductInfoDTO.builder()
+                    .id(item.getProduct().getId())
+                    .description(item.getProduct().getName())
+                    .quantity(item.getQuantity())
+                    .build()
+        ).collect(Collectors.toList());
     }
 
     //metodo para salvar uma venda. Este metodo e chamado na SaleController
@@ -99,7 +105,9 @@ public class SaleService {
 
         //poderia ser feito tambem com um for ou forech
         return products.stream().map(item -> {
-            Product product = productRepositry.getReferenceById(item.getProductid());
+            
+            Product product = productRepositry.findById(item.getProductid())
+                .orElseThrow(()-> new NoItemException("Item não encontrado"));
             ItemSale itemSale = new ItemSale();
             itemSale.setProduct(product);
             itemSale.setQuantity(item.getQuantity());
