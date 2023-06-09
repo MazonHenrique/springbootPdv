@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.curso.pdv.dto.ResponseDTO;
 import com.curso.pdv.entity.User;
-import com.curso.pdv.exceptions.NoItemException;
 import com.curso.pdv.repository.UserRepositry;
+
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/user")
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> post(@RequestBody User user){
+    public ResponseEntity<?> post(@Valid @RequestBody User user){
         try{
             user.setEnable(true);
             return new ResponseEntity<>(userRepositry.save(user),HttpStatus.CREATED);
@@ -43,14 +44,12 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<?> put(@RequestBody User user){
+    public ResponseEntity<?> put(@Valid @RequestBody User user){
         Optional<User> userToEdit = userRepositry.findById(user.getId());
         if(userToEdit.isPresent()){
             try{
                 userRepositry.save(user);
                 return new ResponseEntity<>(user,HttpStatus.OK);
-            }catch(NoItemException error){
-                return new ResponseEntity<>(new ResponseDTO<>(error.getMessage()),HttpStatus.BAD_REQUEST);
             }catch(Exception error){
                 return new ResponseEntity<>(new ResponseDTO<>(error.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
             }

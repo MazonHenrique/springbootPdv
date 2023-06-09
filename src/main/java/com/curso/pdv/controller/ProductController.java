@@ -18,6 +18,8 @@ import com.curso.pdv.dto.ResponseDTO;
 import com.curso.pdv.entity.Product;
 import com.curso.pdv.repository.ProductRepositry;
 
+import jakarta.validation.Valid;
+
 @Controller
 @RequestMapping("/product")
 public class ProductController {
@@ -31,7 +33,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<?> post(@RequestBody Product product){
+    public ResponseEntity<?> post(@Valid @RequestBody Product product){
         try{
             return new ResponseEntity<>(productRepositry.save(product),HttpStatus.CREATED);
         }catch(Exception error){
@@ -40,7 +42,7 @@ public class ProductController {
     }
 
     @PutMapping
-    public ResponseEntity<?> put(@RequestBody Product product){
+    public ResponseEntity<?> put(@Valid @RequestBody Product product){
         Optional<Product> productToEdit = productRepositry.findById(product.getId());
         if(productToEdit.isPresent()){
             productRepositry.save(product);
