@@ -53,10 +53,12 @@ public class SaleService {
             .id(sale.getId())
             .user(sale.getUser().getName())
             .data(sale.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+            .total(total)
             .products(products)
             .build();
     }
-    
+
+    //Método para calcular o total dos itens
     private BigDecimal getTotal(List<ProductInfoDTO> products) {
 		BigDecimal total = new BigDecimal(0);
 		for(int i = 0; i < products.size(); i++) {
@@ -76,6 +78,7 @@ public class SaleService {
                     .id(item.getProduct().getId())
                     .description(item.getProduct().getName())
                     .quantity(item.getQuantity())
+                    .price(item.getProduct().getPrice())
                     .build()
         ).collect(Collectors.toList());
     }
