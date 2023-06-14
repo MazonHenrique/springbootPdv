@@ -1,5 +1,6 @@
 package com.curso.pdv.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -44,15 +45,27 @@ public class SaleService {
 
     //Metodo para montar uma lista de vendas
     public SaleInfoDTO getSaleInfo(Sale sale){
+    	
+    	var products = getProductsInfo(sale.getItems());
+    	BigDecimal total = getTotal(products);
+    	
         return SaleInfoDTO.builder()
             .id(sale.getId())
             .user(sale.getUser().getName())
             .data(sale.getDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
-            .products(getProductsInfo(sale.getItems()))
+            .products(products)
             .build();
     }
     
-    //Metodo para montar uma lista de itens de cada venda
+    private BigDecimal getTotal(List<ProductInfoDTO> products) {
+		BigDecimal total = new BigDecimal(0);
+		for(int i = 0; i < products.size(); i++) {
+			total = total.add(products.get(i).getPrice().multiply(new BigDecimal(products.get(i).getQuantity())));
+		}
+		return total;
+	}
+
+	//Metodo para montar uma lista de itens de cada venda
     private List<ProductInfoDTO> getProductsInfo(List<ItemSale> items) {
         if(CollectionUtils.isEmpty(items)){
             return Collections.emptyList();

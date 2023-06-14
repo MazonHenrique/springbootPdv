@@ -1,5 +1,7 @@
 package com.curso.pdv.dto;
 
+import java.math.BigDecimal;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +16,5 @@ public class ProductInfoDTO {
     private Long id;
     private String description;
     private int quantity;
-    
+    private BigDecimal price;
 }

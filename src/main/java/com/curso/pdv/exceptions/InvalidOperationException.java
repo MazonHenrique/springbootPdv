@@ -1,7 +1,12 @@
 package com.curso.pdv.exceptions;
 
 public class InvalidOperationException extends RuntimeException{
-    public InvalidOperationException(String message){
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public InvalidOperationException(String message){
         super(message);
     }
 }

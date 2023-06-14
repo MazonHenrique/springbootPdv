@@ -35,7 +35,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<?> post(@Valid @RequestBody Product product){
         try{
-            return new ResponseEntity<>(productRepositry.save(product),HttpStatus.CREATED);
+        	return new ResponseEntity<>(productRepositry.save(product),HttpStatus.CREATED);
         }catch(Exception error){
             return new ResponseEntity<>(new ResponseDTO<>(error.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }

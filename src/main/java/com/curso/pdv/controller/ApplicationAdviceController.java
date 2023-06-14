@@ -18,21 +18,21 @@ public class ApplicationAdviceController {
     
     @ExceptionHandler(NoItemException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseDTO handleNoItemException(NoItemException ex){
+    public ResponseDTO<?> handleNoItemException(NoItemException ex){
         String messageError = ex.getMessage();
-        return new ResponseDTO(messageError);
+        return new ResponseDTO<>(messageError);
     }
 
     @ExceptionHandler(InvalidOperationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseDTO handleInvalidOperationException(InvalidOperationException ex){
+    public ResponseDTO<?> handleInvalidOperationException(InvalidOperationException ex){
         String messageError = ex.getMessage();
-        return new ResponseDTO(messageError);
+        return new ResponseDTO<>(messageError);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseDTO handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
+    public ResponseDTO<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex){
         List<String> erros = new ArrayList<>();
 
         ex.getBindingResult().getAllErrors().forEach((error) -> {
