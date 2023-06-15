@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
@@ -16,12 +17,16 @@ public class SecurityConfig {
     }
 
     @Bean
-    public void configure(HttpSecurity http) throws Exception {
+    public SecurityFilterChain  configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authz) -> authz
-                .anyRequest().authenticated().requestMatchers(HttpMethod.POST)
+                .requestMatchers("/**").permitAll()
+               // .requestMatchers(HttpMethod.POST).permitAll()
+               // .requestMatchers(HttpMethod.GET).permitAll()
+               // .requestMatchers(HttpMethod.PUT).permitAll()
+                
             );
         http.csrf((csrf) -> csrf.disable());
        
-
+        return http.build();
     }
 }
