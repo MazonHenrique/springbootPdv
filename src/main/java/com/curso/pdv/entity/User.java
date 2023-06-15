@@ -31,7 +31,15 @@ public class User {
 	@Column(length = 100, nullable = false)
 	@NotBlank(message = "Campo nome é obrigatório")
 	private String name;
+
+	@Column(length = 30, nullable = false)
+	@NotBlank(message = "O campo Username é obrigatorio")
+	private String username;
 	
+	@Column(length = 30, nullable = false)
+	@NotBlank(message = "O campo Senha é obrigatorio")
+	private String password;
+
 	private boolean isEnable;
 	
 	@JsonIgnore

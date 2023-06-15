@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.curso.pdv.dto.ResponseDTO;
 import com.curso.pdv.entity.User;
 import com.curso.pdv.repository.UserRepositry;
+import com.curso.security.SecurityConfig;
 
 import jakarta.validation.Valid;
 
@@ -36,6 +37,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> post(@Valid @RequestBody User user){
         try{
+            user.setPassword(SecurityConfig.passwordEncoder().encode(user.getPassword()));
             user.setEnable(true);
             return new ResponseEntity<>(userRepositry.save(user),HttpStatus.CREATED);
         }catch(Exception error){
@@ -48,6 +50,7 @@ public class UserController {
         Optional<User> userToEdit = userRepositry.findById(user.getId());
         if(userToEdit.isPresent()){
             try{
+                user.setPassword(SecurityConfig.passwordEncoder().encode(user.getPassword()));
                 userRepositry.save(user);
                 return new ResponseEntity<>(user,HttpStatus.OK);
             }catch(Exception error){
