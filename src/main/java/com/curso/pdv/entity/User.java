@@ -36,7 +36,7 @@ public class User {
 	@NotBlank(message = "O campo Username é obrigatorio")
 	private String username;
 	
-	@Column(length = 30, nullable = false)
+	@Column(length = 65, nullable = false)
 	@NotBlank(message = "O campo Senha é obrigatorio")
 	private String password;
 
